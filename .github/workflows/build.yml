@@ -1,4 +1,4 @@
-name: Build
+name: Build and Analyze
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
 jobs:
 
   tests:
-    name: Run Unit Tests
+    name: Run Unit Tests with Coverage
     runs-on: ubuntu-latest
 
     steps:
@@ -20,12 +20,15 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: "3.12"
 
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-          pip install pytest
+          pip install pytest-cov
+
+      - name: Clean pyc files
+        run: find src/ -name "*.pyc" -delete
 
       - name: Run pytest with coverage
         env:
@@ -33,17 +36,18 @@ jobs:
         run: |
           pytest --cov=src --cov-report=xml --cov-report=term-missing src/tests
 
-
-
   sonarqube:
-    name: SonarQube
+    name: SonarQube Scan
     runs-on: ubuntu-latest
-    needs: tests   # <-- SonarQube waits for tests to pass
+    needs: tests   # Waits for tests to finish
 
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          fetch-depth: 0
+
+      - name: Clean pyc files
+        run: find src/ -name "*.pyc" -delete
 
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@fd88b7d7ccbaefd23d8f36f73b59db7a3d246602
@@ -51,4 +55,5 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
+            -Dsonar.projectBaseDir=.
             -Dsonar.python.coverage.reportPaths=coverage.xml
