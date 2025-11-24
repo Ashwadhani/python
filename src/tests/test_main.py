@@ -1,49 +1,57 @@
+import pytest
 from fastapi.testclient import TestClient
 from main import app
 
 client = TestClient(app)
 
+# ---------- Addition ----------
 def test_add():
-    res = client.get("/add?a=3&b=5")
-    assert res.status_code == 200
-    assert res.json() == {"result": 8}
+    response = client.get("/add", params={"a": 5, "b": 3})
+    assert response.status_code == 200
+    assert response.json() == {"result": 8.0}
 
+# ---------- Subtraction ----------
 def test_subtract():
-    res = client.get("/subtract?a=10&b=4")
-    assert res.status_code == 200
-    assert res.json() == {"result": 6}
+    response = client.get("/subtract", params={"a": 10, "b": 4})
+    assert response.status_code == 200
+    assert response.json() == {"result": 6.0}
 
+# ---------- Multiplication ----------
 def test_multiply():
-    res = client.get("/multiply?a=7&b=6")
-    assert res.status_code == 200
-    assert res.json() == {"result": 42}
+    response = client.get("/multiply", params={"a": 2, "b": 7})
+    assert response.status_code == 200
+    assert response.json() == {"result": 14.0}
 
+# ---------- Division ----------
 def test_divide():
-    res = client.get("/divide?a=20&b=5")
-    assert res.status_code == 200
-    assert res.json() == {"result": 4}
+    response = client.get("/divide", params={"a": 10, "b": 2})
+    assert response.status_code == 200
+    assert response.json() == {"result": 5.0}
 
 def test_divide_by_zero():
-    res = client.get("/divide?a=10&b=0")
-    assert res.status_code == 200
-    assert res.json() == {"error": "Cannot divide by zero"}
+    response = client.get("/divide", params={"a": 10, "b": 0})
+    assert response.status_code == 200
+    assert response.json() == {"error": "Cannot divide by zero"}
 
+# ---------- Power ----------
 def test_power():
-    res = client.get("/power?a=2&b=3")
-    assert res.status_code == 200
-    assert res.json() == {"result": 8}
+    response = client.get("/power", params={"a": 2, "b": 3})
+    assert response.status_code == 200
+    assert response.json() == {"result": 8.0}
 
+# ---------- Modulo ----------
 def test_modulo():
-    res = client.get("/modulo?a=10&b=3")
-    assert res.status_code == 200
-    assert res.json() == {"result": 1}
+    response = client.get("/modulo", params={"a": 10, "b": 3})
+    assert response.status_code == 200
+    assert response.json() == {"result": 1.0}
 
 def test_modulo_by_zero():
-    res = client.get("/modulo?a=10&b=0")
-    assert res.status_code == 200
-    assert res.json() == {"error": "Cannot modulo by zero"}
+    response = client.get("/modulo", params={"a": 10, "b": 0})
+    assert response.status_code == 200
+    assert response.json() == {"error": "Cannot modulo by zero"}
 
+# ---------- Average ----------
 def test_average():
-    res = client.get("/average?a=10&b=20")
-    assert res.status_code == 200
-    assert res.json() == {"result": 15}
+    response = client.get("/average", params={"a": 4, "b": 6})
+    assert response.status_code == 200
+    assert response.json() == {"result": 5.0}
