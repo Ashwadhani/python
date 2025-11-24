@@ -28,7 +28,9 @@ jobs:
           pip install pytest
 
       - name: Run pytest
-        run: pytest -v
+        env:
+          PYTHONPATH: ./src   # <-- Add this line
+        run: pytest -v src/tests
 
 
   sonarqube:
